@@ -93,8 +93,23 @@ $(document).ready(function(){
 
   //console.log('init');
 
-  introVideo = Popcorn( "#intro-video" );
-  parkVideo = Popcorn( "#park-video" );
+  // introVideo = Popcorn( "#intro-video" );
+  // parkVideo = Popcorn( "#park-video" );
+
+  introVideo = Popcorn.jplayer( "#intro-video", "http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/HackathonIntro4.mp4", {
+    size: {
+      width: "0px",
+      height: "0px"
+    },
+    fullScreen: true
+  });
+  parkVideo = Popcorn.jplayer( "#park-video", "http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/Isaiah%20-Vimeo%20HD.mp4", {
+    size: {
+      width: "0px",
+      height: "0px"
+    },
+    fullScreen: false // false is the default
+  });
 
   // parkAudio = Popcorn( "#park-audio" )
   parkAudio = Popcorn.jplayer( "#park-audio", "http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/hackathonaudio.mp3", {})
@@ -167,14 +182,15 @@ $(document).ready(function(){
   });
 
   introVideo.on('ended',function(){
-      $('.player-hldr').fadeOut('fast', function() {
+      $('#intro-video').jPlayer('option', 'fullScreen', false);
+      // $('.player-hldr').fadeOut('fast', function() {
       //console.log('faded out player');
         $('#map_canvas').fadeIn('fast', function() {
           initializeGoogleMap();
           parkAudio.play();
           $('#temp-audio-controls').show();
         });
-      });
+      // });
   });
 
   parkAudio.on('ended',function(){
@@ -183,12 +199,13 @@ $(document).ready(function(){
       $('#pano').fadeOut('fast');
       $('#map_canvas').fadeOut('fast', function() {
         //console.log('faded out player');
-        $('.player-hldr').fadeIn('fast', function() {
+        $('#park-video').jPlayer('option', 'fullScreen', true);
+        // $('.player-hldr').fadeIn('fast', function() {
           parkVideo.play();
-          $('#intro-video').hide();
-          $('#park-video').show();
-          $('#temp-audio-controls').hide();
-        });
+          // $('#intro-video').hide();
+          // $('#park-video').show();
+          // $('#temp-audio-controls').hide();
+        // });
       });
     },7000);
   });
@@ -432,6 +449,8 @@ $(document).ready(function(){
 
   <div id="pano"></div>
   <div id="map_canvas"></div>
+
+<!--
   <div class="app-hldr">
     <div class="player-hldr" style="display:none">
       <video id="intro-video" preload="auto" controls style="width:100%;"> 
@@ -442,9 +461,10 @@ $(document).ready(function(){
         <source src="http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/Isaiah%20-Vimeo%20HD.mp4" >
         <source src="http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/Isaiah%20-Vimeo%20HD.webm" >
       </video>
-      
-    </div> <!-- end .player-hldr -->
-  </div> <!-- end .app-hldr -->
+    </div>
+  </div>
+-->
+  <div id="intro-video"></div>
+  <div id="park-video"></div>
 </body>
-
 </html>
