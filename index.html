@@ -21,6 +21,8 @@
 <script type="text/javascript" src="js/popcorn-ie8.min.js"></script>
 <script type="text/javascript" src="js/popcorn.min.js"></script>
 <script type="text/javascript" src="js/popcorn.code.js"></script>
+<script type="text/javascript" src="js/popcorn.player.js"></script>
+<script type="text/javascript" src="js/popcorn.jplayer.js"></script>
 
 <script type="text/javascript">
 //<![CDATA[
@@ -94,7 +96,8 @@ $(document).ready(function(){
   introVideo = Popcorn( "#intro-video" );
   parkVideo = Popcorn( "#park-video" );
 
-  parkAudio = Popcorn( "#park-audio" ) 
+  // parkAudio = Popcorn( "#park-audio" )
+  parkAudio = Popcorn.jplayer( "#park-audio", "http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/hackathonaudio.mp3", {})
   .code({
     start: 5,
     enpanorama: 18,
@@ -417,12 +420,16 @@ $(document).ready(function(){
 
   <div id="closeStreetView" style="display:none;">Watch other trainees</div>
 
+<!--
   <div id="temp-audio-controls" style="display:none">
     <audio id="park-audio" preload="auto"> 
       <source src="http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/hackathonaudio.mp3" >
       <source src="http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/hackathonaudio.ogg" >
     </audio>
   </div>
+-->
+  <div id="park-audio"></div>
+
   <div id="pano"></div>
   <div id="map_canvas"></div>
   <div class="app-hldr">
