@@ -232,7 +232,7 @@ $(document).ready(function(){
     },7000);
   });
 
-  parkVideo.on('ended',function(){
+  var mainPlayerEnded = function() {
     //console.log('park ended');
     var panoramaOptions = {
       position: globalVideoSource,
@@ -263,6 +263,10 @@ $(document).ready(function(){
         }, 1000);
       });
     });
+  };
+
+  parkVideo.on('ended',function(){
+    mainPlayerEnded();
   });
 
   var timeline = null;
@@ -295,21 +299,44 @@ $(document).ready(function(){
       //console.log('pano opened');
       var panorama = new google.maps.StreetViewPanorama(document.getElementById("pano"), panoramaOptions);
       map.setStreetView(panorama);
+
+      parkVideo.destroy();
+
+      parkVideo = Popcorn.jplayer( "#park-video", {
+        media: {
+          m4v: o.mp4,
+          webmv: o.mp4.replace('.mp4','.webm'),
+        },
+        options: {
+          size: {
+            width: "0px",
+            height: "0px"
+          },
+          nativeVideoControls: {
+            all: /./
+          },
+          fullScreen: true
+        }
+      });
+
+      parkVideo.on('ended',function(){
+        mainPlayerEnded();
+      });
+
       // setTimeout
       setTimeout(function(){
-
+/*
         if ($('#park-video')[0].canPlayType('video/webm')) {
           $('#park-video').attr('src',o.mp4.replace('.mp4','.webm'));
         } else {
           $('#park-video').attr('src',o.mp4);
         }
+*/
 
         $('#pano').fadeOut('slow');
 
         $('#map_canvas').fadeOut('fast', function() {
-          $('.player-hldr').fadeIn('fast', function() {
-            parkVideo.play();
-          });
+          parkVideo.play();
         });
       },4000);
     });
