@@ -96,23 +96,45 @@ $(document).ready(function(){
   // introVideo = Popcorn( "#intro-video" );
   // parkVideo = Popcorn( "#park-video" );
 
-  introVideo = Popcorn.jplayer( "#intro-video", "http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/HackathonIntro4.mp4", {
-    size: {
-      width: "0px",
-      height: "0px"
+  introVideo = Popcorn.jplayer( "#intro-video", {
+    media: {
+      m4v: "http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/HackathonIntro4.mp4",
+      webmv: "http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/HackathonIntro4.webm"
     },
-    fullScreen: true
+    options: {
+      size: {
+        width: "0px",
+        height: "0px"
+      },
+      nativeVideoControls: {
+        all: /./
+      },
+      fullScreen: true
+    }
   });
-  parkVideo = Popcorn.jplayer( "#park-video", "http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/Isaiah%20-Vimeo%20HD.mp4", {
-    size: {
-      width: "0px",
-      height: "0px"
+  parkVideo = Popcorn.jplayer( "#park-video", {
+    media: {
+      m4v: "http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/Isaiah%20-Vimeo%20HD.mp4",
+      webmv: "http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/Isaiah%20-Vimeo%20HD.webm",
     },
-    fullScreen: false // false is the default
+    options: {
+      size: {
+        width: "0px",
+        height: "0px"
+      },
+      nativeVideoControls: {
+        all: /./
+      },
+      fullScreen: false // false is the default
+    }
   });
 
   // parkAudio = Popcorn( "#park-audio" )
-  parkAudio = Popcorn.jplayer( "#park-audio", "http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/hackathonaudio.mp3", {})
+  parkAudio = Popcorn.jplayer( "#park-audio", {
+    media: {
+      mp3: "http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/hackathonaudio.mp3"
+    }
+  })
   .code({
     start: 5,
     enpanorama: 18,
@@ -464,7 +486,7 @@ $(document).ready(function(){
     </div>
   </div>
 -->
-  <div id="intro-video"></div>
-  <div id="park-video"></div>
+  <div id="intro-video" style:"display:fixed;"></div>
+  <div id="park-video" style:"display:fixed;"></div>
 </body>
 </html>
