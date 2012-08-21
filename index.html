@@ -16,6 +16,7 @@
 <title>Greencorps</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <link href="css/main.css" rel="stylesheet" type="text/css" />
+<link href="skin/orman.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script type="text/javascript" src="js/jquery.min.js"></script>
 <script type="text/javascript" src="js/popcorn.ie8.js"></script>
@@ -96,22 +97,23 @@ $(document).ready(function(){
   // introVideo = Popcorn( "#intro-video" );
   // parkVideo = Popcorn( "#park-video" );
 
+
   introVideo = Popcorn.jplayer( "#intro-video", {
     media: {
       m4v: "http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/HackathonIntro4.mp4",
       webmv: "http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/HackathonIntro4.webm"
     },
     options: {
+      cssSelectorAncestor: '#intro-container',
       size: {
         width: "0px",
         height: "0px"
-      },
-      nativeVideoControls: {
-        all: /./
-      },
-      fullScreen: true
+      }
     }
   });
+
+  $('#intro-container .jp-gui').hide();
+
   parkVideo = Popcorn.jplayer( "#park-video", {
     media: {
       m4v: "http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/Isaiah%20-Vimeo%20HD.mp4",
@@ -124,8 +126,7 @@ $(document).ready(function(){
       },
       nativeVideoControls: {
         all: /./
-      },
-      fullScreen: false // false is the default
+      }
     }
   });
 
@@ -205,14 +206,12 @@ $(document).ready(function(){
 
   introVideo.on('ended',function(){
       $('#intro-video').jPlayer('option', 'fullScreen', false);
-      // $('.player-hldr').fadeOut('fast', function() {
-      //console.log('faded out player');
-        $('#map_canvas').fadeIn('fast', function() {
-          initializeGoogleMap();
-          parkAudio.play();
-          $('#temp-audio-controls').show();
-        });
-      // });
+      $('#intro-container .jp-gui').hide();
+      $('#map_canvas').fadeIn('fast', function() {
+        initializeGoogleMap();
+        parkAudio.play();
+        // $('#temp-audio-controls').show();
+      });
   });
 
   parkAudio.on('ended',function(){
@@ -463,8 +462,9 @@ $(document).ready(function(){
 
   $('.go').click(function(){
     $('.title').fadeOut('fast', function(){
-        $('.player-hldr').fadeIn('fast');
-        introVideo.play();
+      $('#intro-video').jPlayer('option', 'fullScreen', true);
+      // $('#intro-container .jp-gui').show();
+      introVideo.play();
     });
     return false;
   });
@@ -513,7 +513,82 @@ $(document).ready(function(){
     </div>
   </div>
 -->
-  <div id="intro-video" style:"display:fixed;"></div>
+
+  <!-- <div id="intro-video" style:"display:fixed;"></div> -->
+
+  <div id="intro-container" class="jp-video">
+    <div id="intro-video" class="jp-jplayer"></div>
+      <!--main containers for our controls-->
+      <div class="jp-gui">
+        <div class="jp-video-play">
+          <span class="jp-video-play-icon"><img src="video-play.png"/></span>
+        </div>
+
+        <div class="jp-video-busy" style="display:none">
+          <span class="jp-video-busy-icon"><img src="ajax-loader.gif"/></span>
+        </div>
+
+        <div id ="fstimeline" class="fullscreen-info" style="display:none"></div>
+        <!--<div class="jp-screen-loader"></div>-->
+        <div class="jp-interface">
+          <div class="jp-controls-holder">
+            <!--play and pause buttons-->
+            <a href="#" class="jp-play" tabindex="1">play</a>
+            <a href="#" class="jp-pause" tabindex="1">pause</a>
+            <span class="separator sep-1"></span>
+             
+            <!--progress bar-->
+            <div class="jp-progress">
+              <div class="jp-seek-bar">
+                  <div class="jp-play-bar"><span id="jp-play-drag"></span></div>
+              </div>
+            </div>
+             
+            <!--time notifications-->
+            <div class="jp-current-time"></div>
+            <span class="time-sep">/</span>
+            <div class="jp-duration"></div>
+            <span class="separator sep-2"></span>
+             
+            <!--mute / unmute toggle-->
+            <a href="javascript:;" class="jp-mute" tabindex="2" title="mute">mute</a>
+            <a href="javascript:;" class="jp-unmute" tabindex="2" title="unmute">unmute</a>
+             
+            <!--volume bar-->
+            <div class="jp-volume-bar">
+              <div class="jp-volume-bar-value"><span id="jp-play-volume" class="handle"></span></div>
+            </div>
+             
+            <!--full screen toggle-->
+            <!--<a href="#" class="jp-full-screen" tabindex="3" title="full screen">full screen</a>
+            <a href="#" class="jp-restore-screen" tabindex="3" title="restore screen">restore screen</a>
+
+            <div class="jp-quality">
+              <a class="quality-btn" q="lo" href="#">low</a>
+              <a class="quality-btn" q="me" href="#" style="display:none">med</a>
+              <a class="quality-btn" q="hi" href="#" style="display:none">high</a>
+              <a class="quality-btn" q="hd" href="#" style="display:none">HD</a>
+            </div>-->
+
+          </div><!--end jp-controls-holder-->
+        </div><!--end jp-interface-->
+    </div><!--end jp-gui-->
+
+    <!--unsupported message-->
+    <div class="jp-no-solution">
+      <span>Update Required</span>
+      The version of Flash you are using is not supported.
+    </div>
+
+  </div><!--end jp_container_1-->
+
+
+
+
+
+
+
+
   <div id="park-video" style:"display:fixed;"></div>
 </body>
 </html>
