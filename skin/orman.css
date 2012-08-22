@@ -6,8 +6,8 @@
     width:680px;
 }
 .jp-video-full {
-    width:1000px;
-    height:563px;
+    /* width:1000px; */
+    /* height:563px; */
     position:static !important;
     position:relative
 }
@@ -39,6 +39,7 @@
     position: relative;
     width:100%;
     height: 35px;
+    overflow:hidden;
  
     background-color: #333;
 
@@ -344,4 +345,18 @@ div.jp-video-full div.jp-video-play, div.jp-video-full div.jp-video-busy, div.jp
 
 .jp-quality-ctrl li {
     padding-bottom: 4px;
+}
+
+/* Hack to make audio player work similar to video player, accross bottom of the screen */
+.jp-audio-full {
+    //
+}
+
+.jp-audio-full .jp-gui {
+    position: fixed !important; position: static; /* Rules for IE6 (full-screen) */
+    bottom: -35px;
+    left: 0;
+    width:100%;
+    height:35px;
+    z-index:1000;
 }

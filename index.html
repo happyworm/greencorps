@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+
 <!--
 
  Dual licensed under the MIT and GPL licenses.
@@ -8,7 +10,6 @@
 
 -->
 
-<!DOCTYPE html>
 <html>
 <head>
 <meta charset=utf-8 />
@@ -19,6 +20,7 @@
 <link href="skin/orman.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.jplayer.js"></script>
 <script type="text/javascript" src="js/popcorn.ie8.js"></script>
 <script type="text/javascript" src="js/popcorn.js"></script>
 <script type="text/javascript" src="js/popcorn.code.js"></script>
@@ -97,7 +99,6 @@ $(document).ready(function(){
   // introVideo = Popcorn( "#intro-video" );
   // parkVideo = Popcorn( "#park-video" );
 
-
   introVideo = Popcorn.jplayer( "#intro-video", {
     media: {
       m4v: "http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/HackathonIntro4.mp4",
@@ -105,6 +106,7 @@ $(document).ready(function(){
     },
     options: {
       cssSelectorAncestor: '#intro-container',
+      swfPath:"js",
       size: {
         width: "0px",
         height: "0px"
@@ -120,25 +122,30 @@ $(document).ready(function(){
       webmv: "http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/Isaiah%20-Vimeo%20HD.webm",
     },
     options: {
+      cssSelectorAncestor: '#park-container',
+      swfPath:"js",
       size: {
         width: "0px",
         height: "0px"
-      },
-      nativeVideoControls: {
-        all: /./
       }
     }
   });
+
+  $('#park-container .jp-gui').hide();
 
   // parkAudio = Popcorn( "#park-audio" )
   parkAudio = Popcorn.jplayer( "#park-audio", {
     media: {
       mp3: "http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/hackathonaudio.mp3"
+    },
+    options: {
+      cssSelectorAncestor: '#audio-container',
+      swfPath:"js"
     }
   })
   .code({
     start: 5,
-    enpanorama: 18,
+    end: 18,
     onStart: function( options ) {
       oxonRunPoly.setMap(map);
       map.setZoom(13);
@@ -204,23 +211,28 @@ $(document).ready(function(){
     }
   });
 
+  $('#audio-container .jp-gui').hide();
+
   introVideo.on('ended',function(){
       $('#intro-video').jPlayer('option', 'fullScreen', false);
       $('#intro-container .jp-gui').hide();
       $('#map_canvas').fadeIn('fast', function() {
         initializeGoogleMap();
+        $('#audio-container .jp-gui').show();
         parkAudio.play();
         // $('#temp-audio-controls').show();
       });
   });
 
   parkAudio.on('ended',function(){
+    $('#audio-container .jp-gui').hide();
     // start new piece of video 7 seconds after parkAudio has finished
     setTimeout(function(){
       $('#pano').fadeOut('fast');
       $('#map_canvas').fadeOut('fast', function() {
         //console.log('faded out player');
         $('#park-video').jPlayer('option', 'fullScreen', true);
+        // $('#park-container .jp-gui').show();
         // $('.player-hldr').fadeIn('fast', function() {
           parkVideo.play();
           // $('#intro-video').hide();
@@ -242,7 +254,11 @@ $(document).ready(function(){
       }
     };
 
+    $('#park-video').jPlayer('option', 'fullScreen', false);
+    $('#park-container .jp-gui').hide();
+
     $('#pano').fadeIn('fast', function() {
+
       $('#closeStreetView').show();
       //console.log('pano opend');
       var panorama = new google.maps.StreetViewPanorama(document.getElementById("pano"), panoramaOptions);
@@ -307,16 +323,16 @@ $(document).ready(function(){
           webmv: o.mp4.replace('.mp4','.webm'),
         },
         options: {
+          cssSelectorAncestor: '#park-container',
+          swfPath:"js",
           size: {
             width: "0px",
             height: "0px"
-          },
-          nativeVideoControls: {
-            all: /./
-          },
-          fullScreen: true
+          }
         }
       });
+
+      $('#park-container .jp-gui').hide();
 
       parkVideo.on('ended',function(){
         mainPlayerEnded();
@@ -335,6 +351,8 @@ $(document).ready(function(){
         $('#pano').fadeOut('slow');
 
         $('#map_canvas').fadeOut('fast', function() {
+          $('#park-video').jPlayer('option', 'fullScreen', true);
+          // $('#park-container .jp-gui').show();
           parkVideo.play();
         });
       },4000);
@@ -486,18 +504,8 @@ $(document).ready(function(){
 
   <div id="closeStreetView" style="display:none;">Watch other trainees</div>
 
-<!--
-  <div id="temp-audio-controls" style="display:none">
-    <audio id="park-audio" preload="auto"> 
-      <source src="http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/hackathonaudio.mp3" >
-      <source src="http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/hackathonaudio.ogg" >
-    </audio>
-  </div>
--->
-  <div id="park-audio"></div>
-
-  <div id="pano"></div>
   <div id="map_canvas"></div>
+  <div id="pano"></div>
 
 <!--
   <div class="app-hldr">
@@ -518,60 +526,61 @@ $(document).ready(function(){
 
   <div id="intro-container" class="jp-video">
     <div id="intro-video" class="jp-jplayer"></div>
-      <!--main containers for our controls-->
-      <div class="jp-gui">
-        <div class="jp-video-play">
-          <span class="jp-video-play-icon"><img src="video-play.png"/></span>
-        </div>
+    <!--main containers for our controls-->
+    <div class="jp-gui">
+<!--
+      <div class="jp-video-play">
+        <span class="jp-video-play-icon"><img src="video-play.png"/></span>
+      </div>
 
-        <div class="jp-video-busy" style="display:none">
-          <span class="jp-video-busy-icon"><img src="ajax-loader.gif"/></span>
-        </div>
-
-        <div id ="fstimeline" class="fullscreen-info" style="display:none"></div>
-        <!--<div class="jp-screen-loader"></div>-->
-        <div class="jp-interface">
-          <div class="jp-controls-holder">
-            <!--play and pause buttons-->
-            <a href="#" class="jp-play" tabindex="1">play</a>
-            <a href="#" class="jp-pause" tabindex="1">pause</a>
-            <span class="separator sep-1"></span>
-             
-            <!--progress bar-->
-            <div class="jp-progress">
-              <div class="jp-seek-bar">
-                  <div class="jp-play-bar"><span id="jp-play-drag"></span></div>
-              </div>
+      <div class="jp-video-busy" style="display:none">
+        <span class="jp-video-busy-icon"><img src="ajax-loader.gif"/></span>
+      </div>
+-->
+      <div id ="fstimeline" class="fullscreen-info" style="display:none"></div>
+      <!--<div class="jp-screen-loader"></div>-->
+      <div class="jp-interface">
+        <div class="jp-controls-holder">
+          <!--play and pause buttons-->
+          <a href="#" class="jp-play" tabindex="1">play</a>
+          <a href="#" class="jp-pause" tabindex="1">pause</a>
+          <span class="separator sep-1"></span>
+           
+          <!--progress bar-->
+          <div class="jp-progress">
+            <div class="jp-seek-bar">
+                <div class="jp-play-bar"><span id="jp-play-drag"></span></div>
             </div>
-             
-            <!--time notifications-->
-            <div class="jp-current-time"></div>
-            <span class="time-sep">/</span>
-            <div class="jp-duration"></div>
-            <span class="separator sep-2"></span>
-             
-            <!--mute / unmute toggle-->
-            <a href="javascript:;" class="jp-mute" tabindex="2" title="mute">mute</a>
-            <a href="javascript:;" class="jp-unmute" tabindex="2" title="unmute">unmute</a>
-             
-            <!--volume bar-->
-            <div class="jp-volume-bar">
-              <div class="jp-volume-bar-value"><span id="jp-play-volume" class="handle"></span></div>
-            </div>
-             
-            <!--full screen toggle-->
-            <!--<a href="#" class="jp-full-screen" tabindex="3" title="full screen">full screen</a>
-            <a href="#" class="jp-restore-screen" tabindex="3" title="restore screen">restore screen</a>
+          </div>
+           
+          <!--time notifications-->
+          <div class="jp-current-time"></div>
+          <span class="time-sep">/</span>
+          <div class="jp-duration"></div>
+          <span class="separator sep-2"></span>
+           
+          <!--mute / unmute toggle-->
+          <a href="javascript:;" class="jp-mute" tabindex="2" title="mute">mute</a>
+          <a href="javascript:;" class="jp-unmute" tabindex="2" title="unmute">unmute</a>
+           
+          <!--volume bar-->
+          <div class="jp-volume-bar">
+            <div class="jp-volume-bar-value"><span id="jp-play-volume" class="handle"></span></div>
+          </div>
+           
+          <!--full screen toggle-->
+          <!--<a href="#" class="jp-full-screen" tabindex="3" title="full screen">full screen</a>
+          <a href="#" class="jp-restore-screen" tabindex="3" title="restore screen">restore screen</a>
 
-            <div class="jp-quality">
-              <a class="quality-btn" q="lo" href="#">low</a>
-              <a class="quality-btn" q="me" href="#" style="display:none">med</a>
-              <a class="quality-btn" q="hi" href="#" style="display:none">high</a>
-              <a class="quality-btn" q="hd" href="#" style="display:none">HD</a>
-            </div>-->
+          <div class="jp-quality">
+            <a class="quality-btn" q="lo" href="#">low</a>
+            <a class="quality-btn" q="me" href="#" style="display:none">med</a>
+            <a class="quality-btn" q="hi" href="#" style="display:none">high</a>
+            <a class="quality-btn" q="hd" href="#" style="display:none">HD</a>
+          </div>-->
 
-          </div><!--end jp-controls-holder-->
-        </div><!--end jp-interface-->
+        </div><!--end jp-controls-holder-->
+      </div><!--end jp-interface-->
     </div><!--end jp-gui-->
 
     <!--unsupported message-->
@@ -580,15 +589,154 @@ $(document).ready(function(){
       The version of Flash you are using is not supported.
     </div>
 
-  </div><!--end jp_container_1-->
+  </div><!--end intro-container -->
+
+<!--
+  <div id="temp-audio-controls" style="display:none">
+    <audio id="park-audio" preload="auto"> 
+      <source src="http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/hackathonaudio.mp3" >
+      <source src="http://videos-origin.mozilla.org/serv/webmademovies/silverhacks/hackathonaudio.ogg" >
+    </audio>
+  </div>
+-->
+  <div id="park-audio"></div>
+
+  <div id="audio-container" class="jp-video jp-audio-full">
+    <!--main containers for our controls-->
+    <div class="jp-gui">
+<!--
+      <div class="jp-video-play">
+        <span class="jp-video-play-icon"><img src="video-play.png"/></span>
+      </div>
+
+      <div class="jp-video-busy" style="display:none">
+        <span class="jp-video-busy-icon"><img src="ajax-loader.gif"/></span>
+      </div>
+-->
+      <div id ="fstimeline" class="fullscreen-info" style="display:none"></div>
+      <!--<div class="jp-screen-loader"></div>-->
+      <div class="jp-interface">
+        <div class="jp-controls-holder">
+          <!--play and pause buttons-->
+          <a href="#" class="jp-play" tabindex="1">play</a>
+          <a href="#" class="jp-pause" tabindex="1">pause</a>
+          <span class="separator sep-1"></span>
+           
+          <!--progress bar-->
+          <div class="jp-progress">
+            <div class="jp-seek-bar">
+                <div class="jp-play-bar"><span id="jp-play-drag"></span></div>
+            </div>
+          </div>
+           
+          <!--time notifications-->
+          <div class="jp-current-time"></div>
+          <span class="time-sep">/</span>
+          <div class="jp-duration"></div>
+          <span class="separator sep-2"></span>
+           
+          <!--mute / unmute toggle-->
+          <a href="javascript:;" class="jp-mute" tabindex="2" title="mute">mute</a>
+          <a href="javascript:;" class="jp-unmute" tabindex="2" title="unmute">unmute</a>
+           
+          <!--volume bar-->
+          <div class="jp-volume-bar">
+            <div class="jp-volume-bar-value"><span id="jp-play-volume" class="handle"></span></div>
+          </div>
+           
+          <!--full screen toggle-->
+          <!--<a href="#" class="jp-full-screen" tabindex="3" title="full screen">full screen</a>
+          <a href="#" class="jp-restore-screen" tabindex="3" title="restore screen">restore screen</a>
+
+          <div class="jp-quality">
+            <a class="quality-btn" q="lo" href="#">low</a>
+            <a class="quality-btn" q="me" href="#" style="display:none">med</a>
+            <a class="quality-btn" q="hi" href="#" style="display:none">high</a>
+            <a class="quality-btn" q="hd" href="#" style="display:none">HD</a>
+          </div>-->
+
+        </div><!--end jp-controls-holder-->
+      </div><!--end jp-interface-->
+    </div><!--end jp-gui-->
+
+    <!--unsupported message-->
+    <div class="jp-no-solution">
+      <span>Update Required</span>
+      The version of Flash you are using is not supported.
+    </div>
+
+  </div><!--end audio-container -->
 
 
+  <!-- <div id="park-video" style:"display:fixed;"></div> -->
+
+  <div id="park-container" class="jp-video">
+    <div id="park-video" class="jp-jplayer"></div>
+    <!--main containers for our controls-->
+    <div class="jp-gui">
+<!--
+      <div class="jp-video-play">
+        <span class="jp-video-play-icon"><img src="video-play.png"/></span>
+      </div>
+
+      <div class="jp-video-busy" style="display:none">
+        <span class="jp-video-busy-icon"><img src="ajax-loader.gif"/></span>
+      </div>
+-->
+      <div id ="fstimeline" class="fullscreen-info" style="display:none"></div>
+      <!--<div class="jp-screen-loader"></div>-->
+      <div class="jp-interface">
+        <div class="jp-controls-holder">
+          <!--play and pause buttons-->
+          <a href="#" class="jp-play" tabindex="1">play</a>
+          <a href="#" class="jp-pause" tabindex="1">pause</a>
+          <span class="separator sep-1"></span>
+           
+          <!--progress bar-->
+          <div class="jp-progress">
+            <div class="jp-seek-bar">
+                <div class="jp-play-bar"><span id="jp-play-drag"></span></div>
+            </div>
+          </div>
+           
+          <!--time notifications-->
+          <div class="jp-current-time"></div>
+          <span class="time-sep">/</span>
+          <div class="jp-duration"></div>
+          <span class="separator sep-2"></span>
+           
+          <!--mute / unmute toggle-->
+          <a href="javascript:;" class="jp-mute" tabindex="2" title="mute">mute</a>
+          <a href="javascript:;" class="jp-unmute" tabindex="2" title="unmute">unmute</a>
+           
+          <!--volume bar-->
+          <div class="jp-volume-bar">
+            <div class="jp-volume-bar-value"><span id="jp-play-volume" class="handle"></span></div>
+          </div>
+           
+          <!--full screen toggle-->
+          <!--<a href="#" class="jp-full-screen" tabindex="3" title="full screen">full screen</a>
+          <a href="#" class="jp-restore-screen" tabindex="3" title="restore screen">restore screen</a>
+
+          <div class="jp-quality">
+            <a class="quality-btn" q="lo" href="#">low</a>
+            <a class="quality-btn" q="me" href="#" style="display:none">med</a>
+            <a class="quality-btn" q="hi" href="#" style="display:none">high</a>
+            <a class="quality-btn" q="hd" href="#" style="display:none">HD</a>
+          </div>-->
+
+        </div><!--end jp-controls-holder-->
+      </div><!--end jp-interface-->
+    </div><!--end jp-gui-->
+
+    <!--unsupported message-->
+    <div class="jp-no-solution">
+      <span>Update Required</span>
+      The version of Flash you are using is not supported.
+    </div>
+
+  </div><!--end park-container -->
 
 
-
-
-
-
-  <div id="park-video" style:"display:fixed;"></div>
 </body>
 </html>
